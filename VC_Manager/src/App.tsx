@@ -1,9 +1,22 @@
-import "./App.css";
+import { CreateMember } from "./components/CreateMember";
+import { Home } from "./components/Home";
+import { Login } from "./components/Login";
+import { Navbar } from "./components/Navbar";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <h1>VC-Manager</h1>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/addMember" element={<CreateMember />} />
+          </Route>
+        </Routes>
+      </Router>
     </>
   );
 }
