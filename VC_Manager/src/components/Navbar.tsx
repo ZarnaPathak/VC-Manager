@@ -1,10 +1,18 @@
-import { Link } from "react-router-dom";
-//import { auth } from "../config/firebase";
-//import { useAuthState } from "react-firebase-hooks/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { auth } from "../config/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 import img1 from "../assets/VC_logo.png";
+import { signOut } from "firebase/auth/cordova";
 
 export const Navbar = () => {
-  //const [user] = useAuthState(auth);
+  const [user] = useAuthState(auth);
+  const navigate = useNavigate();
+
+  const signOutUser = async () => {
+    await signOut(auth);
+    navigate("/");
+  };
+
   return (
     <>
       <nav
@@ -31,47 +39,57 @@ export const Navbar = () => {
           <ul className="navbar-nav flex-row">
             <li className="nav-item me-3">
               <Link
-                className="text-dark nav-link d-sm-flex align-items-sm-center fs-4"
+                className="text-dark nav-link d-sm-flex align-items-sm-center fs-4 mt-2"
                 to="/"
               >
                 Home
               </Link>
             </li>
+
             <li className="nav-item me-3 me-lg-1">
               <span>
-                <>
+                {user ? (
+                  <>
+                    <Link
+                      to="/addMember"
+                      className="text-dark nav-link d-sm-flex align-items-sm-center fs-4 mt-2"
+                    >
+                      Add Member
+                    </Link>
+                  </>
+                ) : (
                   <Link
-                    to="/addMember"
-                    className="text-dark nav-link d-sm-flex align-items-sm-center fs-4"
-                  >
-                    Add Member
-                  </Link>
-                </>
-                {/*<Link
                     to="/login"
-                    className="text-light nav-link d-sm-flex align-items-sm-center fs-4"
+                    className="text-light nav-link d-sm-flex align-items-sm-center fs-4 mt-2"
                   >
                     Sign In
-  </Link>*/}
+                  </Link>
+                )}
               </span>
             </li>
-            <li className="nav-item me-3 me-lg-1">
-              <Link
-                to="/user"
-                className="nav-link d-sm-flex align-items-sm-center text-dark fs-4"
-              >
-                <img
-                  src={"https://static.thenounproject.com/png/363633-200.png"}
-                  className="rounded-circle"
-                  height="30"
-                  loading="lazy"
-                />
-                &nbsp;
-                <button className="nav-item nav-link fs-5 text-dark">
-                  Log Out
-                </button>
-              </Link>
-            </li>
+
+            {user && (
+              <li className="nav-item me-3 me-lg-1">
+                <Link
+                  to="/user"
+                  className="nav-link d-sm-flex align-items-sm-center text-dark fs-4"
+                >
+                  <img
+                    src={user?.photoURL || "not set"}
+                    className="rounded-circle"
+                    height="30"
+                    loading="lazy"
+                  />
+                  &nbsp;
+                  <button
+                    className="nav-link d-sm-flex align-items-sm-center text-dark fs-4"
+                    onClick={signOutUser}
+                  >
+                    Log Out
+                  </button>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </nav>
